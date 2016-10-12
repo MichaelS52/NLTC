@@ -1,0 +1,10 @@
+main: me.toaster.nolimitstc.Main
+name: NLTC
+version: 1.0
+commands:
+  nltc:
+    description: used for extra information
+  nltcbasic:
+    description: for basic rollercoasters
+  nltcdoombuggy:
+    description: doom buggy
