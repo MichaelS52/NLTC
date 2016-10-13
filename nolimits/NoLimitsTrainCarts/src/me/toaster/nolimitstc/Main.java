@@ -66,6 +66,10 @@ public class Main extends JavaPlugin implements Listener{
 	public void onChunkUnload(ChunkUnloadEvent e){
 		for(Entity ent : e.getChunk().getEntities()){
 			if(ent.hasMetadata("nolimits")){
+				if(ent.getCustomName()!=null){
+					String customName = ent.getCustomName();
+					writeToFile(customName, "cart: " + customName + " was just removed because it was unloaded in chunks!");
+				}
 				ent.remove();
 			}
 		}
@@ -77,15 +81,21 @@ public class Main extends JavaPlugin implements Listener{
 			if(e.getPlayer().getVehicle().hasMetadata("nolimits")){
 				if(e.getPlayer().getVehicle().getCustomName()!=null){
 					String customName = e.getPlayer().getVehicle().getCustomName();
-					writeToFile(customName, "player: " + e.getPlayer() + " has executed command: " + e.getMessage());
+					writeToFile(customName, "player: " + e.getPlayer() + " has executed command: " + e.getMessage() + " : " + customName);
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityDismount(EntityDismountEvent e){
 		if(e.getDismounted().hasMetadata("nolimits")){
+			if(e.getDismounted().getCustomName()!=null){
+				String customName = e.getDismounted().getCustomName();
+				writeToFile(customName, "player: " + e.getEntity().getName() + " has left the cart: " + customName + " and warped to nearest warp at: " + e.getEntity().getLocation().getX()
+						+","+e.getEntity().getLocation().getY()
+						+","+e.getEntity().getLocation().getZ());
+			}
 			e.getEntity().teleport(Utils.findNearestWarp(e.getDismounted().getLocation()));
 			e.getEntity().sendMessage(ChatColor.GREEN + "Warped to nearest warp!");
 		}
@@ -96,14 +106,14 @@ public class Main extends JavaPlugin implements Listener{
 		if(e.getPlayer().getVehicle()!=null){
 			if(e.getPlayer().getVehicle().hasMetadata("nolimits")){
 				for(PotionEffect eff : e.getPlayer().getActivePotionEffects()){
-					if(e.getPlayer().getVehicle().getCustomName()!=null){
-						String customName = e.getPlayer().getVehicle().getCustomName();
-						writeToFile(customName, "player: " + e.getPlayer() + " left the server in cart: " + customName);
-					}
 					e.getPlayer().removePotionEffect(eff.getType());
-					e.getPlayer().getVehicle().remove();
-					e.getPlayer().teleport(Utils.findNearestWarp(e.getPlayer().getLocation()));
 				}
+				if(e.getPlayer().getVehicle().getCustomName()!=null){
+					String customName = e.getPlayer().getVehicle().getCustomName();
+					writeToFile(customName, "player: " + e.getPlayer() + " left the server in cart: " + customName);
+				}
+				e.getPlayer().getVehicle().remove();
+				e.getPlayer().teleport(Utils.findNearestWarp(e.getPlayer().getLocation()));
 			}
 		}
 	}
